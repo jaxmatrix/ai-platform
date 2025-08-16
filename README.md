@@ -3,13 +3,13 @@
 This is a setup project that will be used to create services for building ai base application
 
 In this setup following services will be created 
-1. Backend service using node js
-2. Frontend service that will be used to render the ui
-3. Storage service using `MiniIO` this will help in ensuring s3 like storage protocols 
-4. n8n runner this service will contain an instance of n8n that will host the ai side the applcation 
-5. Python mcp service that will expose different functionality not present in n8n 
-6. Python service that will host all the support service that will be required by the application 
-7. Lastly there will a final folder for research related things like finetuning, references etc.
+- [x] 1. Backend service using node js
+- [x] 2. Frontend service that will be used to render the ui
+- [x] 3. Storage service using `MiniIO` this will help in ensuring s3 like storage protocols 
+- [ ] 4. n8n runner this service will contain an instance of n8n that will host the ai side the applcation 
+- [x] 5. Python mcp service that will expose different functionality not present in n8n 
+- [ ] 6. Python service that will host all the support service that will be required by the application 
+- [-] 7. Lastly there will a final folder for research related things like finetuning, references etc.
 
 # Code guidelines 
 
