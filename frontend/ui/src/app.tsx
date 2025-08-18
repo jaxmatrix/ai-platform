@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import preactLogo from './assets/preact.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
@@ -6,10 +6,22 @@ import './app.css'
 export function App() {
   const [count, setCount] = useState(0)
 
+  useEffect(() => {
+    const getUpdates = async function () {
+      const response = await fetch("/api/")
+      const body = await response.json()
+
+      console.log(body)
+    }
+
+    getUpdates()
+  }, [])
+
   return (
     <>
       <div>
         <a href="https://vite.dev" target="_blank">
+          <div>This is a super owner </div>
           <img src={viteLogo} class="logo" alt="Vite logo" />
         </a>
         <a href="https://preactjs.com" target="_blank">

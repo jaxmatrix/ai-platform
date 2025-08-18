@@ -12,6 +12,11 @@ const io = new Server(httpServer);
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
 setupSwagger(app);
 
 const port = process.env.PORT || 5000;
@@ -31,7 +36,8 @@ const port = process.env.PORT || 5000;
  *               type: string
  */
 app.get('/', (req, res) => {
-  res.send('<h1>Hello world</h1>');
+  console.log("Calling hello world")
+  res.json({ message: 'Hello world' });
 });
 
 io.on('connection', (socket) => {
