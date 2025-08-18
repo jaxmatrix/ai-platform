@@ -57,6 +57,100 @@ pnpm preview
 
 The preview will be available at `http://localhost:4000`.
 
+# Docker Compose Profiles
+
+The project includes Docker Compose profiles for both development and production environments. Each service (backend, frontend, and mcp) has dedicated configurations for both profiles.
+
+## Development Environment
+
+The development profile includes hot-reloading, volume mounting for live code changes, and development-optimized configurations.
+
+### Running Development Environment
+
+To start all services in development mode:
+
+```bash
+docker compose --profile dev up
+```
+
+To start specific services:
+
+```bash
+# Start only backend and database services
+docker compose --profile dev up backend-dev postgres minio
+
+# Start frontend with its dependencies
+docker compose --profile dev up frontend-dev backend-dev postgres minio
+```
+
+### Development Services
+
+- **backend-dev**: Node.js backend with hot reload on port 5000
+- **frontend-dev**: Vite dev server on port 3000 with hot reload
+- **mcp-dev**: Python MCP service with hot reload on port 8000
+
+All development services include volume mounting for live code changes.
+
+## Production Environment
+
+The production profile uses optimized builds, static file serving, and production-ready configurations.
+
+### Running Production Environment
+
+To start all services in production mode:
+
+```bash
+docker compose --profile prod up
+```
+
+To start specific services:
+
+```bash
+# Start only backend services
+docker compose --profile prod up backend-prod postgres minio
+
+# Start frontend with dependencies
+docker compose --profile prod up frontend-prod backend-prod postgres minio
+```
+
+### Production Services
+
+- **backend-prod**: Optimized Node.js build on port 5000
+- **frontend-prod**: Nginx serving static files on port 3000 (mapped to 80 internally)
+- **mcp-prod**: Optimized Python service on port 8000
+
+## Service Ports
+
+| Service | Development Port | Production Port |
+|---------|------------------|-----------------|
+| Frontend | 3000 | 3000 |
+| Backend | 5000 | 5000 |
+| MCP | 8000 | 8000 |
+| PostgreSQL | 5432 | 5432 |
+| MinIO | 9000, 9001 | 9000, 9001 |
+| N8N | 5678 | 5678 |
+
+## Additional Docker Commands
+
+```bash
+# Build images without starting services
+docker compose --profile dev build
+docker compose --profile prod build
+
+# View configuration for a profile
+docker compose --profile dev config
+docker compose --profile prod config
+
+# Stop and remove containers
+docker compose --profile dev down
+docker compose --profile prod down
+
+# Remove all containers, networks, and volumes
+docker compose --profile dev down -v
+docker compose --profile prod down -v
+```
+
 # Changelog
 
+- **2025-08-18:** Added Docker Compose profiles documentation for development and production environments.
 - **2025-08-17:** Added instructions for running the frontend UI application. 

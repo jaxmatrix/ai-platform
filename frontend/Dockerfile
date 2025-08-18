@@ -1,31 +1,31 @@
-FROM node:18-alpine
+# Base stage with dependencies
+FROM node:20-alpine AS base
 
 WORKDIR /app
 
 # Install pnpm
 RUN npm install -g pnpm
 
-# Copy workspace file
-COPY pnpm-workspace.yaml ./
-
 # Copy package files
-COPY ui/package.json ui/pnpm-lock.yaml ./ui/
+COPY ui/package.json ui/pnpm-lock.yaml ui/pnpm-workspace.yaml ./
 
 # Install dependencies
-WORKDIR /app/ui
 RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY ui/ ./
 
-# Build the application
+# Development target
+FROM base AS dev
+EXPOSE 3000 
+CMD ["pnpm", "run", "dev", "--host"]
+
+# Build stage
+FROM base AS build
 RUN pnpm run build
 
-# Use nginx to serve the built app
-FROM nginx:alpine
-COPY --from=0 /app/ui/dist /usr/share/nginx/html
-
-# Copy nginx config (optional)
+# Production target
+FROM docker.io/library/nginx:alpine AS prod
+COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
