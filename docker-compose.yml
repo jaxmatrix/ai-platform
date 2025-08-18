@@ -62,7 +62,7 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
-      - '3000:3000'
+      - '5000:5000'
     depends_on:
       - postgres
       - minio
@@ -73,7 +73,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - '80:80'
+      - '3000:80'
     depends_on:
       - backend
 
