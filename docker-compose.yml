@@ -3,7 +3,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: ankane/pgvector
+    image: docker.io/ankane/pgvector
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -18,7 +18,7 @@ services:
       - prod
 
   minio:
-    image: minio/minio
+    image: docker.io/minio/minio
     restart: always
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
@@ -29,9 +29,12 @@ services:
     volumes:
       - ./data/minio:/data
     command: server /data --console-address ":9001"
+    profiles:
+      - dev
+      - prod
 
   n8n:
-    image: n8nio/n8n
+    image: docker.io/n8nio/n8n:1.81.0
     restart: always
     environment:
       DB_TYPE: postgresdb
@@ -44,11 +47,12 @@ services:
       N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER}
       N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD}
     ports:
-      - '5678:5678'
+      - '5679:5678'
     volumes:
       - ./data/n8n:/home/node/.n8n
     depends_on:
       - postgres
+      - minio
     profiles:
       - dev
       - prod
