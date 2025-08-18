@@ -1,55 +1,19 @@
-import { useEffect, useState } from 'preact/hooks'
-import preactLogo from './assets/preact.svg'
-import viteLogo from '/vite.svg'
-import './app.css'
+import { Allotment } from 'allotment';
+import { Renderer } from './components/Renderer';
+import { AIChat } from './components/AIChat';
+import 'allotment/dist/style.css';
 
 export function App() {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    const getUpdates = async function () {
-      const response = await fetch("/api/")
-      const body = await response.json()
-
-      console.log(body)
-    }
-
-    getUpdates()
-  }, [])
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <div>This is a super owner </div>
-          <img src={viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
-        </a>
-      </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p>
-        Check out{' '}
-        <a
-          href="https://preactjs.com/guide/v10/getting-started#create-a-vite-powered-preact-app"
-          target="_blank"
-        >
-          create-preact
-        </a>
-        , the official Preact + Vite starter
-      </p>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
-    </>
+    <div className="h-screen">
+      <Allotment>
+        <Allotment.Pane preferredSize="70%">
+          <Renderer />
+        </Allotment.Pane>
+        <Allotment.Pane preferredSize="30%">
+          <AIChat />
+        </Allotment.Pane>
+      </Allotment>
+    </div>
   )
 }
