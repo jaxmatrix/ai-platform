@@ -1,5 +1,5 @@
 import { createContext } from 'preact';
-import { useContext, useEffect, useRef } from 'preact/hooks';
+import { useContext, useEffect, useRef, useState } from 'preact/hooks';
 import { io, Socket } from 'socket.io-client';
 import { useChatStore } from '../store/chatStore';
 import type { ComponentChildren } from 'preact';
@@ -20,6 +20,7 @@ interface SocketProviderProps {
 
 export function SocketProvider({ children }: SocketProviderProps) {
   const socketRef = useRef<Socket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
   const { addMessage } = useChatStore();
 
   useEffect(() => {
@@ -34,10 +35,12 @@ export function SocketProvider({ children }: SocketProviderProps) {
     // Socket event listeners
     socket.on('connect', () => {
       console.log('Socket connected:', socket.id);
+      setIsConnected(true);
     });
 
     socket.on('disconnect', () => {
       console.log('Socket disconnected');
+      setIsConnected(false);
     });
 
     socket.on('message', (data: { content: string; role: 'user' | 'assistant' }) => {
@@ -48,7 +51,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
       });
     });
 
-    socket.on('ai_response', (data: { content: string }) => {
+    socket.on('ai_message', (data: { content: string }) => {
       console.log('Received AI response:', data);
       addMessage({
         content: data.content,
@@ -64,7 +67,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
   const contextValue: SocketContextValue = {
     socket: socketRef.current,
-    isConnected: socketRef.current?.connected || false,
+    isConnected,
   };
 
   return (
