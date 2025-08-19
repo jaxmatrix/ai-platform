@@ -130,6 +130,89 @@ docker compose --profile prod up frontend-prod backend-prod postgres minio
 | MinIO      | 9000, 9001       | 9000, 9001      |
 | N8N        | 5678             | 5678            |
 
+## Service Communication and Orchestration
+
+Understanding how services communicate within Docker Compose is crucial for proper application orchestration. Services can communicate with each other using service names as hostnames within the Docker network.
+
+### Internal Service URLs
+
+When services need to communicate with each other, use the service name as the hostname:
+
+| Service       | Internal URL                   | External URL (from host)      |
+| ------------- | ------------------------------ | ----------------------------- |
+| backend-dev   | `http://backend-dev:5000`      | `http://localhost:5000`       |
+| backend-prod  | `http://backend-prod:5000`     | `http://localhost:5000`       |
+| postgres      | `postgres:5432`                | `localhost:5432`              |
+| minio         | `http://minio:9000`            | `http://localhost:9000`       |
+| n8n           | `http://n8n:5678`              | `http://localhost:5679`       |
+| mcp-dev       | `http://mcp-dev:8000`          | `http://localhost:8000`       |
+| mcp-prod      | `http://mcp-prod:8000`         | `http://localhost:8000`       |
+
+### Frontend Configuration
+
+The frontend service uses different backend URLs depending on the environment:
+
+**Development Mode (Vite Proxy):**
+- Frontend runs on host machine: `http://localhost:3000`
+- API requests to `/api` are proxied to `http://backend-dev:5000`
+- Socket.IO connects to: `http://localhost:5000` (from browser)
+
+**Production Mode (Docker):**
+- Frontend container communicates with: `http://backend-prod:5000`
+- External access: `http://localhost:3000`
+
+### Example Service Communication
+
+```typescript
+// Frontend Socket.IO connection (from browser)
+const socket = io('http://localhost:5000');
+
+// Backend connecting to database
+const dbUrl = 'postgresql://user:pass@postgres:5432/dbname';
+
+// Backend connecting to MinIO
+const minioClient = new Minio.Client({
+  endPoint: 'minio',
+  port: 9000,
+  useSSL: false
+});
+
+// Backend calling MCP service
+const mcpResponse = await fetch('http://mcp-dev:8000/api/endpoint');
+```
+
+### Environment-Specific URLs
+
+Create environment variables to handle different environments:
+
+```bash
+# Development (.env.dev)
+DATABASE_URL=postgresql://user:pass@postgres:5432/dbname
+MINIO_ENDPOINT=minio
+BACKEND_URL=http://backend-dev:5000
+
+# Production (.env.prod)
+DATABASE_URL=postgresql://user:pass@postgres:5432/dbname
+MINIO_ENDPOINT=minio
+BACKEND_URL=http://backend-prod:5000
+```
+
+### Building Specific Services
+
+```bash
+# Build only frontend for development
+docker compose --profile dev build frontend-dev
+
+# Build only backend for production
+docker compose --profile prod build backend-prod
+
+# Build multiple specific services
+docker compose --profile dev build frontend-dev backend-dev
+
+# Build with no cache
+docker compose --profile dev build --no-cache frontend-dev
+```
+
 ## Additional Docker Commands
 
 ```bash
