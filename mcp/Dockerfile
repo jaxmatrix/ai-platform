@@ -3,17 +3,19 @@ FROM python:3.11-slim AS base
 
 WORKDIR /app
 
+# Install system dependencies for unstructured and other packages
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libmagic1 \
+    libmagic-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install uv
 RUN pip install uv
 
-# Copy Python files
-COPY . .
-
 # Development target
 FROM base AS dev
-
-# Install dev dependencies
-RUN uv pip install --system fastapi uvicorn python-multipart
 
 # Expose port
 EXPOSE 8000
@@ -24,8 +26,14 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 # Production target
 FROM base AS prod
 
-# Install only production dependencies
-RUN uv pip install --system fastapi uvicorn
+# Copy requirements file first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN uv pip install --system -r requirements.txt
+
+# Copy application files
+COPY . .
 
 # Expose port
 EXPOSE 8000

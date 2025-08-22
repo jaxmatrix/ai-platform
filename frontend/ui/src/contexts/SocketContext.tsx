@@ -4,6 +4,34 @@ import { io, Socket } from 'socket.io-client';
 import { useChatStore } from '../store/chatStore';
 import type { ComponentChildren } from 'preact';
 
+function extractAndDecodeContent(content: string): string {
+  // Check if content contains an iframe with srcdoc
+  const iframeRegex = /<iframe[^>]*srcdoc="([^"]*)"[^>]*>/gi;
+  const match = iframeRegex.exec(content);
+  
+  if (match && match[1]) {
+    // Extract the srcdoc content
+    let extractedContent = match[1];
+    
+    // Decode HTML entities
+    extractedContent = extractedContent
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&#39;/g, "'")
+      .replace(/&#x27;/g, "'")
+      .replace(/&#x2F;/g, '/')
+      .replace(/&#x60;/g, '`')
+      .replace(/&#x3D;/g, '=');
+    
+    return extractedContent;
+  }
+  
+  // If no iframe found, return original content
+  return content;
+}
+
 interface SocketContextValue {
   socket: Socket | null;
   isConnected: boolean;
@@ -21,7 +49,7 @@ interface SocketProviderProps {
 export function SocketProvider({ children }: SocketProviderProps) {
   const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const { addMessage } = useChatStore();
+  const { addMessage, chatid } = useChatStore();
 
   useEffect(() => {
     // Initialize socket connection
@@ -48,14 +76,20 @@ export function SocketProvider({ children }: SocketProviderProps) {
       addMessage({
         content: data.content,
         role: data.role,
+        chatid,
       });
     });
 
-    socket.on('ai_message', (data: { content: string }) => {
+    socket.on('ai_message', (data: string) => {
       console.log('Received AI response:', data);
+      
+      // Extract content from iframe srcdoc and decode HTML entities
+      const processedContent = extractAndDecodeContent(data);
+      
       addMessage({
-        content: data.content,
+        content: processedContent,
         role: 'assistant',
+        chatid,
       });
     });
 

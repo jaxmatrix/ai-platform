@@ -1,0 +1,276 @@
+.chat-message {
+  margin-bottom: 1rem;
+}
+
+.chat-message .prose,
+.chat-message .prose-invert {
+  max-width: none;
+  width: 100%;
+}
+
+.chat-message .prose pre,
+.chat-message .prose-invert pre {
+  padding: 1rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+}
+
+.chat-message .prose code,
+.chat-message .prose-invert code {
+  font-size: 0.875rem;
+}
+
+/* SVG rendering styles */
+.chat-message svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
+}
+
+/* SVG container styling */
+.svg-container {
+  max-width: 100%;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+}
+
+.svg-container svg {
+  max-width: 100%;
+  max-height: 400px;
+  width: auto;
+  height: auto;
+}
+
+/* Markdown editor styles */
+.markdown-editor-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.markdown-input-editor {
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.markdown-input-editor .w-md-editor {
+  background-color: transparent !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden !important;
+}
+
+.markdown-input-editor .w-md-editor-text-textarea,
+.markdown-input-editor .w-md-editor-text-input,
+.markdown-input-editor .w-md-editor-text {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  padding: 12px !important;
+  background-color: transparent !important;
+  color: white !important;
+  border: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+  resize: none !important;
+}
+
+.markdown-input-editor .w-md-editor-text-container {
+  min-height: 120px !important;
+  background-color: transparent !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+/* Hide toolbar completely */
+.markdown-input-editor .w-md-editor-toolbar {
+  display: none !important;
+}
+
+/* Style the editor content area */
+.markdown-input-editor .w-md-editor-text {
+  background-color: #1f2937 !important;
+  color: white !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.markdown-input-editor .w-md-editor-text-container > div {
+  background-color: transparent !important;
+  overflow-x: hidden !important;
+}
+
+/* Ensure placeholder text is visible */
+.markdown-input-editor .w-md-editor-text-textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Style the markdown rendered content to be white and wrap properly */
+.markdown-input-editor .w-md-editor-text .token.title,
+.markdown-input-editor .w-md-editor-text .token.bold,
+.markdown-input-editor .w-md-editor-text .token.code,
+.markdown-input-editor .w-md-editor-text h1,
+.markdown-input-editor .w-md-editor-text h2,
+.markdown-input-editor .w-md-editor-text h3,
+.markdown-input-editor .w-md-editor-text h4,
+.markdown-input-editor .w-md-editor-text h5,
+.markdown-input-editor .w-md-editor-text h6,
+.markdown-input-editor .w-md-editor-text p,
+.markdown-input-editor .w-md-editor-text li,
+.markdown-input-editor .w-md-editor-text strong,
+.markdown-input-editor .w-md-editor-text em {
+  color: white !important;
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+}
+
+/* Prevent code blocks from causing horizontal scroll */
+.markdown-input-editor .w-md-editor-text pre,
+.markdown-input-editor .w-md-editor-text code {
+  overflow-x: auto !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+  max-width: 100% !important;
+}
+
+/* Markdown content styling without prose classes to avoid nesting issues */
+.markdown-content {
+  line-height: 1.6;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content h1 { font-size: 1.5em; }
+.markdown-content h2 { font-size: 1.3em; }
+.markdown-content h3 { font-size: 1.1em; }
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 { font-size: 1em; }
+
+.markdown-content p {
+  margin-bottom: 1rem;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+}
+
+.markdown-content em {
+  font-style: italic;
+}
+
+.markdown-content a {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.markdown-content a:hover {
+  color: #1d4ed8;
+}
+
+/* User message specific styles */
+.chat-message-user .markdown-content {
+  color: white;
+}
+
+.chat-message-user .markdown-content h1,
+.chat-message-user .markdown-content h2,
+.chat-message-user .markdown-content h3,
+.chat-message-user .markdown-content h4,
+.chat-message-user .markdown-content h5,
+.chat-message-user .markdown-content h6 {
+  color: white;
+}
+
+.chat-message-user .markdown-content blockquote {
+  border-left-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.chat-message-user .markdown-content a {
+  color: #93c5fd;
+}
+
+.chat-message-user .markdown-content a:hover {
+  color: #dbeafe;
+}
+
+/* Code block styling in messages */
+.chat-message pre {
+  background-color: #1f2937 !important;
+  color: #f3f4f6 !important;
+  padding: 1rem !important;
+  border-radius: 0.375rem !important;
+  overflow-x: auto !important;
+  margin: 0.5rem 0 !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+.chat-message code {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+  font-size: 0.875rem !important;
+}
+
+/* Inline code styling */
+.chat-message :not(pre) > code {
+  background-color: rgba(156, 163, 175, 0.2) !important;
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.875rem !important;
+}
+
+/* User message code blocks - make them visible on dark background */
+.chat-message-user pre {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  color: #f3f4f6 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.chat-message-user :not(pre) > code {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #f3f4f6 !important;
+}
+
+.chat-message-user {
+  background-color: #0047AB;
+  padding : 12px;
+  color: white;
+}
+
+.chat-message-ai {
+  background-color: transparent;
+  padding: 12px;
+}

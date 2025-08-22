@@ -51,17 +51,18 @@ io.on('connection', (socket) => {
   socket.on("user_message", async (data) => {
 
     console.log("Received message from user:", data);
-    const api = `${AI_API}/test-chat`
+    const api = `${AI_API}/webhook/test-chat`
 
     try {
       const response = await axios.post(api, {
+        "id": data.chatid,
         "message": data.content,
         "type": "text"
       })
 
-      console.log(response.data);
+      console.log("RESPONSE FROM AI:", typeof (response.data), response.data);
 
-      socket.emit("ai_message", { content: response.data });
+      socket.emit("ai_message", response.data);
 
     } catch (error) {
       socket.emit("ai_message", { content: "Error sending the message to AI" + ` ${api}` })

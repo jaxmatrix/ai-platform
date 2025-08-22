@@ -6,17 +6,8 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
-
 # Development stage
 FROM base as dev
-
-# Install all dependencies (including dev dependencies)
-RUN pnpm install --frozen-lockfile
-
-# Copy source code
-COPY . .
 
 # Expose port
 EXPOSE 5000
@@ -26,6 +17,9 @@ CMD ["pnpm", "dev"]
 
 # Production stage
 FROM base as prod
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
 
 # Install only production dependencies
 RUN pnpm install --frozen-lockfile --prod

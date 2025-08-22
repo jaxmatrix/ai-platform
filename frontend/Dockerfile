@@ -6,6 +6,15 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
+# Development target
+FROM base AS dev
+
+EXPOSE 3000 
+CMD ["pnpm", "run", "dev", "--host"]
+
+# Build stage
+FROM base AS build
+
 # Copy package files
 COPY ui/package.json ui/pnpm-lock.yaml ui/pnpm-workspace.yaml ./
 
@@ -15,13 +24,6 @@ RUN pnpm install --frozen-lockfile
 # Copy source code
 COPY ui/ ./
 
-# Development target
-FROM base AS dev
-EXPOSE 3000 
-CMD ["pnpm", "run", "dev", "--host"]
-
-# Build stage
-FROM base AS build
 RUN pnpm run build
 
 # Production target
