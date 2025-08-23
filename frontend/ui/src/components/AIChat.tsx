@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { useChatStore } from '../store/chatStore';
 import { useSocket } from '../contexts/SocketContext';
+import { useAIModeStore } from '../store/aiModeStore';
+import type { AIMode } from '../types/chat';
 // @ts-ignore
 import ReactMarkdown from 'react-markdown';
 // @ts-ignore
@@ -142,8 +144,11 @@ const components = {
 export function AIChat() {
   const { messages, addMessage, chatid } = useChatStore();
   const { socket, isConnected } = useSocket();
+  const { mode, setMode } = useAIModeStore();
   const [input, setInput] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -151,6 +156,20 @@ export function AIChat() {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
@@ -168,6 +187,7 @@ export function AIChat() {
       chatid,
       content: input,
       timestamp: new Date().toISOString(),
+      aiMode: mode,
     });
 
     // Clear input and contentEditable div
@@ -204,9 +224,49 @@ export function AIChat() {
       <div className="p-4 border-b">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">AI Chat</h2>
-          <div className={`flex items-center gap-2 text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
-            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-600' : 'bg-red-600'}`} />
-            {isConnected ? 'Connected' : 'Disconnected'}
+          <div className="flex items-center gap-4">
+            {/* AI Mode Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <span className="text-gray-700">{mode}</span>
+                <svg
+                  className={`w-4 h-4 text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-1 w-32 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                  <div className="py-1">
+                    {(['test-chat', 'spec1'] as AIMode[]).map((aiMode) => (
+                      <button
+                        key={aiMode}
+                        onClick={() => {
+                          setMode(aiMode);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${mode === aiMode ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                          }`}
+                      >
+                        {aiMode}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className={`flex items-center gap-2 text-sm ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
+              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-600' : 'bg-red-600'}`} />
+              {isConnected ? 'Connected' : 'Disconnected'}
+            </div>
           </div>
         </div>
       </div>

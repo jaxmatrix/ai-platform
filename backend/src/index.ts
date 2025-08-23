@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
   socket.on("user_message", async (data) => {
 
     console.log("Received message from user:", data);
-    const api = `${AI_API}/webhook/test-chat`
+    const api = `${AI_API}/webhook/${data.aiMode}`
 
     try {
       const response = await axios.post(api, {
